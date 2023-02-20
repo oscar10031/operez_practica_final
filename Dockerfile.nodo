@@ -16,6 +16,4 @@ RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
 RUN echo -n 'root:zeus2022' | chpasswd
 RUN mkdir -p $RUTA/.ssh && chmod 755 $RUTA/.ssh && touch $RUTA/.ssh/authorized_keys && chmod 644 $RUTA/.ssh/authorized_keys
 RUN echo $SSH_PUBLIC_KEY >> $RUTA/.ssh/authorized_keys
-COPY ./entrypoint.sh $RUTA/entrypoint.sh
-RUN chmod +x $RUTA/entrypoint.sh
 
