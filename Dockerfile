@@ -28,5 +28,5 @@ RUN echo $SSH_PUBLIC_KEY >> $RUTA/.ssh/authorized_keys
 COPY ./entrypoint.sh $RUTA/entrypoint.sh
 RUN chmod +x $RUTA/entrypoint.sh
 
-COPY agent.jar /root/agent.jar
+COPY agent.jar /root/workspace/agent.jar
 ENTRYPOINT ["/root/entrypoint.sh"]
