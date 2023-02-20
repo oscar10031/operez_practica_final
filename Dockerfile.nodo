@@ -1,28 +1,22 @@
 # Fichero dockerfile.nodo, aqui defino la clave pública generada desde dentro del controlador de jenkins
-FROM docker:dind
+FROM ubuntu:22.04
 ENV SSH_PUBLIC_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJTYqhOQNnglZ/kv9DZGHiepGPo/HdWzChevj4IG3t07 jenkins@91be307143f3"
-ENV RUTA="/root"
-RUN apk update
-RUN apk add --update unzip curl wget shadow
-
-# RUN groupmod -g 998 docker
-RUN mkdir $RUTA/workspace && chmod 777 $RUTA/workspace
-
-#Install JDK11 and Groovy
-RUN apk add openjdk11
-RUN wget https://www.apache.org/dyn/closer.lua/groovy/4.0.4/distribution/apache-groovy-binary-4.0.4.zip?action=download -O $RUTA/apache-groovy-binary-4.0.4.zip && unzip $RUTA/apache-groovy-binary-4.0.4.zip -d $RUTA/ && rm $RUTA/apache-groovy-binary-4.0.4.zip
-COPY ./java.sh /etc/profile.d/java.sh
-
+WORKDIR /root
+RUN apt update
+RUN apt install -y curl openjdk-11-jdk ssh ca-certificates gnupg lsb-release apt-transport-https software-properties-common 
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+RUN apt update
+RUN apt-cache policy docker-ce
+RUN apt install -y docker-ce
 
 #Enable ssh login
-RUN apk add --update --no-cache openssh
 RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
 RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
 RUN echo -n 'root:zeus2022' | chpasswd
 RUN mkdir -p $RUTA/.ssh && chmod 755 $RUTA/.ssh && touch $RUTA/.ssh/authorized_keys && chmod 644 $RUTA/.ssh/authorized_keys
 RUN echo $SSH_PUBLIC_KEY >> $RUTA/.ssh/authorized_keys
-COPY ./entrypoint.sh $RUTA/entrypoint.sh
-RUN chmod +x $RUTA/entrypoint.sh
 
+COPY agent.jar /root/agent.jar
 
-ENTRYPOINT ["/root/entrypoint.sh"]
+CMD ["java","-jar","agent.jar","-jnlpUrl","http://jenkins:8080/manage/computer/nodo01/jenkins-agent.jnlp","-secret","147790cadba5989b9b829f2baabd514f36f077b4ff256fa36756b0bd56d239df","-workDir","/home/jenkins"]
