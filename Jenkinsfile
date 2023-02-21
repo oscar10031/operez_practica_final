@@ -18,7 +18,7 @@ pipeline {
             }
                 }
 
-        stage('Creación de la red docker DEV') {
+        stage('Creación de la red docker PRO') {
             when {
                 branch 'main'
             }
