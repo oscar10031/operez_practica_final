@@ -27,7 +27,7 @@ pipeline {
                 }
         stage('Importando datos a la base de datos') {
             steps {
-                sh 'docker exec -t phppgadmin psql -U postgres -c"CREATE DATABASE dvdrental;" '
+                sh 'docker exec -t phppgadmin psql -U postgres -c "CREATE DATABASE dvdrental;"'
 
             }
                 }
