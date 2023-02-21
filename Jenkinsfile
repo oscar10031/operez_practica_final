@@ -21,7 +21,7 @@ pipeline {
         stage('Levantando contenedor de postgres') {
             steps {
                 sh '''docker run -d --network red-operez --name postgres -e POSTGRES_PASSWORD=1234Abcd \
-                -e DATABASE_HOST=postgres \
+
 	            -v /home/bootuser/operez_practica_final/postgres_data:/var/lib/postgresql/data \
 	            postgres:11
                 '''
@@ -30,7 +30,7 @@ pipeline {
         stage('Levantando contenedor de phpPgAdmin') {
             steps {
                 sh '''docker run -d --name phppgadmin -p 80:8080 -p 443:8443 \
-                    --net red-operez \
+                    --net red-operez -e DATABASE_HOST=postgres \
                     bitnami/phppgadmin:latest
                 '''
             }
