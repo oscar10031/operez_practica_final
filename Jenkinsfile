@@ -110,7 +110,7 @@ pipeline {
                 label 'nodoaws'
             }
             steps {
-                sh 'sleep 15'
+                sh 'sleep 7'
                 sh 'docker exec -t postgresql psql -U postgres -c "CREATE DATABASE dvdrental;"'
                 sh 'docker cp dvdrental.tar postgresql:/tmp/dvdrental.tar'
                 sh 'docker exec -t postgresql pg_restore -U postgres -d dvdrental /tmp/dvdrental.tar'
