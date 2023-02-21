@@ -1,19 +1,11 @@
 pipeline {
     agent any
     stages {
-        stage('Despliegue de Postgres SQL') {
-            agent {
-                docker {
-                    image 'postgres:11-alpine'
-                    // Run the container on the node specified at the
-                    // top-level of the Pipeline, in the same workspace,
-                    // rather than on a new node entirely:
-                    reuseNode true
+        stage('Creación de la red docker') {
+                sh "docker network create red-operez"
                 }
             }
             steps {
                 sh 'gradle --version'
             }
         }
-    }
-}
