@@ -1,15 +1,15 @@
 FROM docker:dind
-# ENV SSH_PUBLIC_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJTYqhOQNnglZ/kv9DZGHiepGPo/HdWzChevj4IG3t07 jenkins@91be307143f3"
-# ENV RUTA="/root"
+ENV SSH_PUBLIC_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJTYqhOQNnglZ/kv9DZGHiepGPo/HdWzChevj4IG3t07 jenkins@91be307143f3"
+ENV RUTA="/root"
 RUN apk update
 RUN apk add --update unzip curl wget shadow git
 
 
-#RUN groupmod -g 998 docker
-RUN mkdir $RUTA/workspace && chmod 777 $RUTA/workspace
+RUN groupmod -g 998 docker
+RUN mkdir root/workspace && chmod 777 root/workspace
 
 
-# RUN apk add nodejs-current npm
+RUN apk add nodejs-current npm
 
 
 #Install JDK11 and Groovy
@@ -19,14 +19,14 @@ COPY ./java.sh /etc/profile.d/java.sh
 
 
 #Enable ssh login
-#RUN apk add --update --no-cache openssh
-#RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
-#RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
-#RUN echo -n 'root:zeus2022' | chpasswd
-#RUN mkdir -p $RUTA/.ssh && chmod 755 $RUTA/.ssh && touch $RUTA/.ssh/authorized_keys && chmod 644 $RUTA/.ssh/authorized_keys
-#RUN echo $SSH_PUBLIC_KEY >> $RUTA/.ssh/authorized_keys
-#COPY ./entrypoint.sh $RUTA/entrypoint.sh
-#RUN chmod +x $RUTA/entrypoint.sh
+RUN apk add --update --no-cache openssh
+RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
+RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+RUN echo -n 'root:zeus2022' | chpasswd
+RUN mkdir -p $RUTA/.ssh && chmod 755 $RUTA/.ssh && touch $RUTA/.ssh/authorized_keys && chmod 644 $RUTA/.ssh/authorized_keys
+RUN echo $SSH_PUBLIC_KEY >> $RUTA/.ssh/authorized_keys
+COPY ./entrypoint.sh root/entrypoint.sh
+RUN chmod +x root/entrypoint.sh
 
 COPY agent.jar /root/workspace/agent.jar
 ENTRYPOINT ["/root/entrypoint.sh"]
