@@ -29,7 +29,7 @@ pipeline {
             steps {
                 sh 'docker exec -t postgresql psql -U postgres -c "CREATE DATABASE dvdrental;"'
                 sh 'docker cp /home/bootuser/operez_practica_final/repo/operez_practica_final/dvdrental.tar postgresql:/tmp/dvdrental.tar'
-                sh 'docker exec -t postgresql psql -U postgres -c "pg_restore -U postgres -d dvdrental /tmp/dvdrental.tar"'
+                sh 'docker exec -t postgresql pg_restore -U postgres -d dvdrental /tmp/dvdrental.tar'
             }
                 }
 
