@@ -37,7 +37,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'postgrespwd', variable: 'postgrespwd')]) {
                 sh '''docker run -d --network red-operez --network-alias postgres --name postgresql -e POSTGRES_PASSWORD="${postgrespwd}" \
-	            -v /home/bootuser/operez_practica_final/postgres_data:/var/lib/postgresql/data \
+	            -v postgres_data:/var/lib/postgresql/data \
 	            postgres:11
                 '''
                 }
@@ -53,7 +53,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'postgrespwd', variable: 'postgrespwd')]) {
                 sh '''docker run -d --network red-operez --network-alias postgres --name postgresql -e POSTGRES_PASSWORD="${postgrespwd}" \
-	            -v /home/bootuser/operez_practica_final/postgres_data:/var/lib/postgresql/data \
+	            -v postgres_data:/var/lib/postgresql/data \
 	            postgres:11
                 '''
                 }
