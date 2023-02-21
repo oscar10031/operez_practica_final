@@ -4,7 +4,6 @@ pipeline {
        DISABLE_AUTH = 'true'                               //can be used in whole pipeline
    }
     stages {
-            withCredentials([string(credentialsId: 'postgrespwd', variable: 'postgrespwd')]) {
         stage('Creación de la red docker') {
             steps {
                 sh "docker network create red-operez"
@@ -12,10 +11,12 @@ pipeline {
                 }
         stage('Levantando contenedor de postgres') {
             steps {
+                withCredentials([string(credentialsId: 'postgrespwd', variable: 'postgrespwd')]) {
                 sh '''docker run -d --network red-operez --network-alias postgres --name postgresql -e POSTGRES_PASSWORD="${postgrespwd}" \
 	            -v /home/bootuser/operez_practica_final/postgres_data:/var/lib/postgresql/data \
 	            postgres:11
                 '''
+                }
             }
         }
         stage('Levantando contenedor de phpPgAdmin') {
@@ -36,5 +37,5 @@ pipeline {
 
 
         }
-    }
+
 }
