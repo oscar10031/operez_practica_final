@@ -6,9 +6,9 @@ pipeline {
     stages {
         stage('Limpieza de recursos') {
             steps {
-                sh '''docker container stop postgres
+                sh '''docker container stop postgresql
                     docker container stop phppgadmin
-                     docker container rm postgres
+                     docker container rm postgresql
                      docker container rm phppgadmin
                      docker network rm red-operez'''
             }
