@@ -11,7 +11,7 @@ pipeline {
                 }
         stage('Levantando contenedor de postgres') {
             steps {
-                sh '''docker run -d --network red-operez --name postgresql -e POSTGRES_PASSWORD=1234Abcd \
+                sh '''docker run -d --network red-operez --network-alias postgres --name postgresql -e POSTGRES_PASSWORD=1234Abcd \
 	            -v /home/bootuser/operez_practica_final/postgres_data:/var/lib/postgresql/data \
 	            postgres:11
                 '''
@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Levantando contenedor de phpPgAdmin') {
             steps {
-                sh '''docker run -d --name phppgadmin -p 80:8080 -p 443:8443 \
+                sh '''docker run -d --name phppgadmin -p 80:8080 -p 443:8443 -e DATABASE_HOST=postgres\
                     --net red-operez \
                     bitnami/phppgadmin:latest
                 '''
@@ -27,9 +27,8 @@ pipeline {
                 }
         stage('Importando datos a la base de datos') {
             steps {
-                sh '''PGPASSWORD=1234Abcd psql -h postgresql -d postgres -U postgres
-                    CREATE DATABASE dvdrental;
-                '''
+                sh 'docker exec -t phppgadmin psql -U postgres -c"CREATE DATABASE dvdrental;" '
+
             }
                 }
 
