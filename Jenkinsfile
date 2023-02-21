@@ -28,7 +28,7 @@ pipeline {
         stage('Importando datos a la base de datos') {
             steps {
                 sh 'docker exec -t postgresql psql -U postgres -c "CREATE DATABASE dvdrental;"'
-                sh 'docker cp /home/bootuser/operez_practica_final/repo/operez_practica_final/dvdrental.tar:/tmp/dvdrental.tar'
+                sh 'docker cp /home/bootuser/operez_practica_final/repo/operez_practica_final/dvdrental.tar postgresql:/tmp/dvdrental.tar'
                 sh 'pg_restore -U postgres -d dvdrental /tmp/dvdrental.tar'
             }
                 }
