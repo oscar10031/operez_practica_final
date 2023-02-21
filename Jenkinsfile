@@ -27,7 +27,29 @@ pipeline {
                 sh "docker network create red-operez"
             }
                 }
-        stage('Levantando contenedor de postgres') {
+        stage('Levantando contenedor de postgres en PRE') {
+            when {
+                branch 'dev'
+            }
+            agent { 
+                label 'principal'
+            }
+            steps {
+                withCredentials([string(credentialsId: 'postgrespwd', variable: 'postgrespwd')]) {
+                sh '''docker run -d --network red-operez --network-alias postgres --name postgresql -e POSTGRES_PASSWORD="${postgrespwd}" \
+	            -v /home/bootuser/operez_practica_final/postgres_data:/var/lib/postgresql/data \
+	            postgres:11
+                '''
+                }
+            }
+        }
+        stage('Levantando contenedor de postgres en PRO') {
+            when {
+                branch 'main'
+            }
+            agent { 
+                label 'nodoaws'
+            }
             steps {
                 withCredentials([string(credentialsId: 'postgrespwd', variable: 'postgrespwd')]) {
                 sh '''docker run -d --network red-operez --network-alias postgres --name postgresql -e POSTGRES_PASSWORD="${postgrespwd}" \
