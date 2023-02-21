@@ -1,7 +1,4 @@
 pipeline {
-    agent { 
-         label 'principal'
-            }
     environment {
        DISABLE_AUTH = 'true'                               //can be used in whole pipeline
    }
