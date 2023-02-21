@@ -36,7 +36,7 @@ pipeline {
             }
             steps {
                 withCredentials([string(credentialsId: 'postgrespwd', variable: 'postgrespwd')]) {
-                sh '''docker run --expose 5432 -d --network red-operez --network-alias postgres --name postgresql -e POSTGRES_PASSWORD="${postgrespwd}" \
+                sh '''docker run -d -p 5432:5432 --network red-operez --network-alias postgres --name postgresql -e POSTGRES_PASSWORD="${postgrespwd}" \
 	            -v /home/bootuser/operez_practica_final/postgres_data:/var/lib/postgresql/data \
 	            postgres:11
                 '''
@@ -52,7 +52,7 @@ pipeline {
             }
             steps {
                 withCredentials([string(credentialsId: 'postgrespwd', variable: 'postgrespwd')]) {
-                sh '''docker run --expose 5432 -d --network red-operez --network-alias postgres --name postgresql -e POSTGRES_PASSWORD="${postgrespwd}" \
+                sh '''docker run -d -p 5432:5432 --network red-operez --network-alias postgres --name postgresql -e POSTGRES_PASSWORD="${postgrespwd}" \
 	            -v /home/ubuntu/workspace/postgres_data:/var/lib/postgresql/data \
 	            postgres:11
                 '''
@@ -110,7 +110,7 @@ pipeline {
                 label 'nodoaws'
             }
             steps {
-                sh 'sleep 15'
+                sh 'sleep 7'
                 sh 'docker exec -t postgresql psql -U postgres -c "CREATE DATABASE dvdrental;"'
                 sh 'docker cp dvdrental.tar postgresql:/tmp/dvdrental.tar'
                 sh 'docker exec -t postgresql pg_restore -U postgres -d dvdrental /tmp/dvdrental.tar'
