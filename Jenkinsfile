@@ -25,6 +25,13 @@ pipeline {
                 '''
             }
                 }
+        stage('Importando datos a la base de datos') {
+            steps {
+                sh '''PGPASSWORD=1234Abcd psql -h postgresql -d postgres -U postgres
+                    CREATE DATABASE dvdrental;
+                '''
+            }
+                }
 
 
         }
