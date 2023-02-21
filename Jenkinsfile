@@ -1,10 +1,30 @@
 pipeline {
-    agent any
+    agent { 
+         label 'principal'
+            }
     environment {
        DISABLE_AUTH = 'true'                               //can be used in whole pipeline
    }
     stages {
-        stage('Creación de la red docker') {
+        stage('Creación de la red docker DEV') {
+            when {
+                branch 'dev'
+            }
+            agent { 
+                label 'principal'
+            }
+            steps {
+                sh "docker network create red-operez"
+            }
+                }
+
+        stage('Creación de la red docker DEV') {
+            when {
+                branch 'main'
+            }
+            agent { 
+                label 'nodoaws'
+            }
             steps {
                 sh "docker network create red-operez"
             }
