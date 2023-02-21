@@ -1,4 +1,5 @@
 pipeline {
+    agent any
     environment {
        DISABLE_AUTH = 'true'                               //can be used in whole pipeline
    }
