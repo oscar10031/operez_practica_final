@@ -1,10 +1,15 @@
 pipeline {
     agent any
+    environment {
+       DISABLE_AUTH = 'true'                               //can be used in whole pipeline
+   }
     stages {
         stage('Limpieza de recursos') {
             steps {
                 sh '''docker container stop postgres
+                    docker container stop phppgadmin
                      docker container rm postgres
+                     docker container rm phppgadmin
                      docker network rm red-operez'''
             }
                 }
@@ -16,7 +21,7 @@ pipeline {
         stage('Levantando contenedor de postgres') {
             steps {
                 sh '''docker run -d --network red-operez --name postgres -e POSTGRES_PASSWORD=1234Abcd \
-	            -e PGDATA=/var/lib/postgresql/data/pgdata \
+	            -e PGDATA=/var/lib/postgresql/data/pgdata -DATABASE_ENABLE_EXTRA_LOGIN_SECURITY=no \
 	            -v /home/bootuser/operez_practica_final/postgres_data:/var/lib/postgresql/data \
 	            postgres:11
                 '''
