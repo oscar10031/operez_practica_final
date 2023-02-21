@@ -1,10 +1,27 @@
 pipeline {
-    agent any
     environment {
        DISABLE_AUTH = 'true'                               //can be used in whole pipeline
    }
     stages {
-        stage('Creación de la red docker') {
+        stage('Creación de la red docker DEV') {
+            when {
+                branch 'dev'
+            }
+            agent { 
+                label 'principal'
+            }
+            steps {
+                sh "docker network create red-operez"
+            }
+                }
+
+        stage('Creación de la red docker PRO') {
+            when {
+                branch 'main'
+            }
+            agent { 
+                label 'nodoaws'
+            }
             steps {
                 sh "docker network create red-operez"
             }
@@ -29,6 +46,7 @@ pipeline {
                 }
         stage('Importando datos a la base de datos') {
             steps {
+                sh 'sleep 15'
                 sh 'docker exec -t postgresql psql -U postgres -c "CREATE DATABASE dvdrental;"'
                 sh 'docker cp /home/bootuser/operez_practica_final/repo/operez_practica_final/dvdrental.tar postgresql:/tmp/dvdrental.tar'
                 sh 'docker exec -t postgresql pg_restore -U postgres -d dvdrental /tmp/dvdrental.tar'
