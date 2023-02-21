@@ -4,15 +4,6 @@ pipeline {
        DISABLE_AUTH = 'true'                               //can be used in whole pipeline
    }
     stages {
-        stage('Limpieza de recursos') {
-            steps {
-                sh '''docker container stop postgresql
-                    docker container stop phppgadmin
-                     docker container rm postgresql
-                     docker container rm phppgadmin
-                     docker network rm red-operez'''
-            }
-                }
         stage('Creación de la red docker') {
             steps {
                 sh "docker network create red-operez"
