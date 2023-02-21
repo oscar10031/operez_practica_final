@@ -59,7 +59,13 @@ pipeline {
                 }
             }
         }
-        stage('Levantando contenedor de phpPgAdmin') {
+        stage('Levantando contenedor de phpPgAdmin en PRE') {
+             when {
+                branch 'dev'
+            }
+            agent { 
+                label 'principal'
+            }
             steps {
                 sh '''docker run -d --name phppgadmin -p 80:8080 -p 443:8443 -e DATABASE_HOST=postgres\
                     --net red-operez \
@@ -67,11 +73,46 @@ pipeline {
                 '''
             }
                 }
-        stage('Importando datos a la base de datos') {
+
+        stage('Levantando contenedor de phpPgAdmin en PRO') {
+             when {
+                branch 'main'
+            }
+            agent { 
+                label 'nodoaws'
+            }
+            steps {
+                sh '''docker run -d --name phppgadmin -p 80:8080 -p 443:8443 -e DATABASE_HOST=postgres\
+                    --net red-operez \
+                    bitnami/phppgadmin:latest
+                '''
+            }
+                }
+        stage('Importando datos a la base de datos en PRE') {
+            when {
+                branch 'dev'
+            }
+            agent { 
+                label 'principal'
+            }
             steps {
                 sh 'sleep 15'
                 sh 'docker exec -t postgresql psql -U postgres -c "CREATE DATABASE dvdrental;"'
-                sh 'docker cp /home/bootuser/operez_practica_final/repo/operez_practica_final/dvdrental.tar postgresql:/tmp/dvdrental.tar'
+                sh 'docker cp dvdrental.tar postgresql:/tmp/dvdrental.tar'
+                sh 'docker exec -t postgresql pg_restore -U postgres -d dvdrental /tmp/dvdrental.tar'
+            }
+                }
+        stage('Importando datos a la base de datos en PRO') {
+            when {
+                branch 'main'
+            }
+            agent { 
+                label 'nodoaws'
+            }
+            steps {
+                sh 'sleep 15'
+                sh 'docker exec -t postgresql psql -U postgres -c "CREATE DATABASE dvdrental;"'
+                sh 'docker cp dvdrental.tar postgresql:/tmp/dvdrental.tar'
                 sh 'docker exec -t postgresql pg_restore -U postgres -d dvdrental /tmp/dvdrental.tar'
             }
                 }
