@@ -18,7 +18,7 @@ pipeline {
 	            -e POSTGRES_PASSWORD=1234Abcd \
 	            e PGDATA=/var/lib/postgresql/data/pgdata \
 	            -v /home/bootuser/operez_practica_final/postgres_data:/var/lib/postgresql/data \
-	            postgres:11"
+	            postgres:11
                 '''
             }
                 }
