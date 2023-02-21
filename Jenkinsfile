@@ -13,7 +13,7 @@ pipeline {
                 }
         stage('Levantando contenedor de postgres') {
             steps {
-                sh '''docker run -d --network red-operez\
+                sh '''docker run -d --network red-operez \
 	            --name postgres \
 	            -e POSTGRES_PASSWORD=1234Abcd \
 	            e PGDATA=/var/lib/postgresql/data/pgdata \
