@@ -3,7 +3,9 @@ pipeline {
     stages {
         stage('Limpieza de recursos') {
             steps {
-                sh "docker network rm red-operez"
+                sh '''docker network rm red-operez
+                     docker container stop postgres
+                     docker container rm postgres'''
             }
                 }
         stage('Creación de la red docker') {
